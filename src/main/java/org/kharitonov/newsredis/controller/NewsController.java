@@ -1,19 +1,19 @@
 package org.kharitonov.newsredis.controller;
 
 import org.kharitonov.newsredis.entity.News;
-import org.kharitonov.newsredis.repository.NewsDao;
+import org.kharitonov.newsredis.repository.NewsRedisRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-public class RedisController {
+public class NewsController {
 
-    private final NewsDao dao;
+    private final NewsRedisRepository dao;
 
-    public RedisController(NewsDao newsDao) {
-        this.dao = newsDao;
+    public NewsController(NewsRedisRepository newsRedisRepository) {
+        this.dao = newsRedisRepository;
     }
 
     @PostMapping("/publish")

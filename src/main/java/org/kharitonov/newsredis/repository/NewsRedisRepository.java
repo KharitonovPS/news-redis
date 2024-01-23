@@ -9,12 +9,12 @@ import java.util.List;
 
 
 @Repository
-public class NewsDao {
+public class NewsRedisRepository {
 
     private static final String HASH_KEY = "News";
     private final RedisTemplate template;
 
-    public NewsDao(@Qualifier("redisTemplate") RedisTemplate template) {
+    public NewsRedisRepository(@Qualifier("redisTemplate") RedisTemplate template) {
         this.template = template;
     }
 
