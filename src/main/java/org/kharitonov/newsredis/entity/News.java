@@ -2,6 +2,7 @@ package org.kharitonov.newsredis.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @RedisHash("News")
+@EqualsAndHashCode
 public class News implements Serializable {
 
     private Long id;

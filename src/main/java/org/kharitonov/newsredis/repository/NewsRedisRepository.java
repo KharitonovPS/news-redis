@@ -1,17 +1,19 @@
 package org.kharitonov.newsredis.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kharitonov.newsredis.entity.News;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-
+@Slf4j
 @Repository
 public class NewsRedisRepository {
 
-    private static final String HASH_KEY = "News";
     private final RedisTemplate template;
 
     public NewsRedisRepository(@Qualifier("redisTemplate") RedisTemplate template) {
@@ -20,20 +22,33 @@ public class NewsRedisRepository {
 
 
     public News save(News news) {
-        template.opsForHash().put(HASH_KEY, news.getId(), news);
+        String key = "News:" + news.getTitle();
+        var valueOperations = template.opsForValue();
+        valueOperations.set(key, news);
+        log.info("News Added -> {}", news);
         return news;
     }
 
     public List<News> findAll() {
-        return template.opsForHash().values(HASH_KEY);
+        Set<String> keys = template.keys("News:*");
+        List<News> newsList = new ArrayList<>();
+
+        var valueOperations = template.opsForValue();
+        for (String key : keys) {
+            News news = (News) valueOperations.get(key);
+            if (news != null) {
+                newsList.add(news);
+            }
+        }
+        return newsList;
     }
 
-    public News findNewsById(long id) {
-        return (News) template.opsForHash().get(HASH_KEY, id);
+    public News findNewsByTitle(String title) {
+        return (News) template.opsForValue().get("News:" + title);
     }
 
-    public String deleteNews(long id) {
-        template.opsForHash().delete(HASH_KEY, id);
+    public String deleteNews(String title) {
+        template.delete("News:" + title);
         return "News removed";
     }
 }

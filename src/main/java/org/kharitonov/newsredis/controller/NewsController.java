@@ -26,13 +26,13 @@ public class NewsController {
         return dao.findAll();
     }
 
-    @GetMapping("/{id}")
-    public News findNewsById(@PathVariable long id) {
-        return dao.findNewsById(id);
+    @GetMapping("/{title}")
+    public News findNewsByTitle(@PathVariable String title) {
+        return dao.findNewsByTitle(title);
     }
 
-    @DeleteMapping("/{id}")
-    public String remove(@PathVariable long id) {
-        return dao.deleteNews(id);
+    @DeleteMapping("/{title}")
+    public String remove(@PathVariable String title) {
+        return dao.deleteNews(title);
     }
 }
