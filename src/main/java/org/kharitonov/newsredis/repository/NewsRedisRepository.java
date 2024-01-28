@@ -6,20 +6,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Repository
 public class NewsRedisRepository {
 
-    private final RedisTemplate template;
+    private final RedisTemplate<String, News> template;
 
-    public NewsRedisRepository(@Qualifier("redisTemplate") RedisTemplate template) {
+    public NewsRedisRepository(
+//            @Qualifier("redisTemplate")
+            RedisTemplate<String, News> template
+    ) {
         this.template = template;
     }
-
 
     public News save(News news) {
         String key = "News:" + news.getTitle();
@@ -34,17 +34,26 @@ public class NewsRedisRepository {
         List<News> newsList = new ArrayList<>();
 
         var valueOperations = template.opsForValue();
-        for (String key : keys) {
-            News news = (News) valueOperations.get(key);
-            if (news != null) {
-                newsList.add(news);
+        if (keys != null) {
+            for (String key : keys) {
+                News news = valueOperations.get(key);
+                if (news != null) {
+                    newsList.add(news);
+                }
             }
         }
         return newsList;
     }
 
     public News findNewsByTitle(String title) {
-        return (News) template.opsForValue().get("News:" + title);
+        var valueOperations = template.opsForValue();
+        Optional<News> news = Optional.ofNullable(
+                valueOperations.get("News:" + title)
+        );
+        return news.orElseThrow(
+                () -> new NoSuchElementException(
+                        "Can not find News with title -> " + title
+                ));
     }
 
     public String deleteNews(String title) {
