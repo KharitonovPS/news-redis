@@ -2,7 +2,6 @@ package org.kharitonov.newsredis.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kharitonov.newsredis.entity.News;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +14,6 @@ public class NewsRedisRepository {
     private final RedisTemplate<String, News> template;
 
     public NewsRedisRepository(
-//            @Qualifier("redisTemplate")
             RedisTemplate<String, News> template
     ) {
         this.template = template;
